@@ -8,13 +8,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 
-
 export default function My_account() {
     const [username, setUsername] = useState('');
     const [customer, setCustomer] = useState({});
     const [editingField, setEditingField] = useState('');
     const [editedCustomer, setEditedCustomer] = useState({});
-    const [order, setOrder] = useState([])
+    const [order, setOrder] = useState([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
@@ -22,6 +22,12 @@ export default function My_account() {
             setUsername(storedUsername);
         }
     }, []);
+    useEffect(() => {
+        // Kiểm tra trạng thái đăng nhập từ localStorage hoặc API
+        const loggedInStatus = localStorage.getItem('isLoggedIn');
+        setIsLoggedIn(loggedInStatus === 'true');
+      }, []);
+    
     useEffect(() => {
         axios.get('http://localhost:3010/products/customers')
             .then(response => {
@@ -60,10 +66,14 @@ export default function My_account() {
                 toast.error("Error saving account info!");
             });
     };
-    const handleLogOut = () => {
-        localStorage.removeItem('username')
-    }
-
+    const handleLogout = () => {
+        localStorage.setItem('isLoggedIn', 'false');
+        localStorage.removeItem('usename');
+        setIsLoggedIn(false);
+        toast.success("Logout success!")
+        window.location.href = "/Login_Register";
+      };
+  
 
     return (
         <div className="py-2 top-header bg">
@@ -87,7 +97,7 @@ export default function My_account() {
                                     <li className="nav-item"> <a className="text-gray border border-silver mb-2 nav-link" data-bs-toggle="tab" data-bs-target="#downloades" type="button" role="tab" aria-controls="downloades" aria-selected="true"> <i className="bi bi-download me-2" />Downloads</a></li>
                                     <li className="nav-item"> <a className="text-gray border border-silver mb-2 nav-link" data-bs-toggle="tab" data-bs-target="#addresses" type="button" role="tab" aria-controls="addresses" aria-selected="true"> <i className="bi bi-geo-alt me-2" />Addresses </a></li>
                                     <li className="nav-item"> <a className="text-gray border border-silver mb-2 nav-link" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true"> <i className="bi bi-person-vcard me-2" />Account Details </a></li>
-                                    <li className="nav-item"> <a className="text-gray border border-silver mb-2 nav-link" href="Login_Register"><i className="bi bi-box-arrow-right me-2" />Logout</a></li>
+                                    <li className="nav-item"> <a className="text-gray border border-silver mb-2 nav-link" href=""><i className="bi bi-box-arrow-right me-2" />Logout</a></li>
                                 </ul>
                             </div>
                             <div className="col-lg-9">
@@ -123,7 +133,9 @@ export default function My_account() {
                                             <div className="col-6 col-lg-4">
                                                 <div className="mt-3 py-5 border border-silver-light text-center">
                                                     <div className="fs-1 text-dark"><i className="bi bi-box-arrow-right" /></div>
-                                                    <NavLink to="/Login_Register"><h6 className="text-dark mt-2 mb-0" onClick={handleLogOut}>Logout</h6></NavLink>
+                                                    {isLoggedIn && (
+                                                        <NavLink to=""><h6 className="text-dark mt-2 mb-0" onClick={handleLogout}>Logout</h6></NavLink>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -143,7 +155,7 @@ export default function My_account() {
                                             <tbody>
                                                 {order.map((orderItem) => (
                                                     <tr key={orderItem.id}>
-                                                        <td className="text-gray" scope="row">#{orderItem.id}</td>
+                                                        <td className="text-gray" scope="row">#F{orderItem.id}</td>
                                                         <td>{orderItem.date}</td>
                                                         <td>
                                                             {orderItem.status === 1 ? (

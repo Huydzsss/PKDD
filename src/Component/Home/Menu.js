@@ -2,19 +2,8 @@ import React,{useState,useEffect} from 'react';
 import { NavLink } from 'react-router-dom';
 import '../style.css';
 
-export default function Menu() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    // Kiểm tra trạng thái đăng nhập từ localStorage hoặc API
-    const loggedInStatus = localStorage.getItem('isLoggedIn');
-    setIsLoggedIn(loggedInStatus === 'true');
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.setItem('isLoggedIn', 'false');
-    setIsLoggedIn(false);
-  };
+export default function Menu({ isLoggedIn, handleLogout }) {
+ 
 
   return (
     <div className="bg-dark py-lg-1 py-3">
@@ -111,7 +100,7 @@ export default function Menu() {
                   <NavLink to="/My_account" className="text-white d-none d-lg-flex flex-column align-items-center position-relative">
                     <i className="bi bi-person-circle h5 m-0"></i>
                   </NavLink>
-                  
+                  <button onClick={handleLogout} className="btn btn-danger">Logout</button>
                 </>
               ) : (
                 <NavLink to="/Login_Register" className="text-white d-none d-lg-flex flex-column align-items-center position-relative">
