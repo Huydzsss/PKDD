@@ -1,0 +1,70 @@
+Để tạo một backend đơn giản để truy cập cơ sở dữ liệu MySQL và cung cấp dữ liệu cho ứng dụng ReactJS của bạn, bạn có thể sử dụng Node.js với Express framework. Dưới đây là một hướng dẫn cơ bản về cách tạo backend này:
+
+Bước 1: Cài đặt Node.js và MySQL
+Đảm bảo bạn đã cài đặt Node.js trên máy tính của mình.
+Cài đặt MySQL và tạo một cơ sở dữ liệu cùng với bảng chứa dữ liệu sản phẩm.
+Bước 2: Tạo một Dự án Node.js mới
+Tạo một thư mục mới cho dự án của bạn.
+Mở terminal và di chuyển đến thư mục vừa tạo.
+Chạy lệnh sau để tạo một dự án Node.js mới:
+bash
+Sao chép mã
+npm init -y
+Bước 3: Cài đặt các Gói Cần Thiết
+Cài đặt các gói cần thiết, bao gồm Express và mysql:
+bash
+//cài thêm cors qua lệnh npm i cors để tránh lỗi
+Sao chép mã
+npm install express mysql
+Bước 4: Tạo Một File JavaScript cho Backend
+Tạo một file JavaScript mới, ví dụ: server.js.
+Mở file này trong trình soạn thảo và thêm mã sau:
+javascript
+Sao chép mã này:
+const express = require('express');
+const mysql = require('mysql');
+const cors = require('cors');
+const app = express();
+const port = 3001; // Chọn một cổng mà backend của bạn sẽ lắng nghe
+
+app.use(cors());
+const connection = mysql.createConnection({
+  host: 'localhost', // Thay đổi nếu cần thiết
+  user: 'your_mysql_user', // Thay đổi,tên mặc định là root nhá
+  password: 'your_mysql_password', // Thay đổi,mk mặc định là rỗng
+  database: 'your_database_name' // Thay đổi
+});
+
+// Kết nối đến cơ sở dữ liệu
+connection.connect((err) => {
+  if (err) {
+    console.error('Error connecting to MySQL:', err);
+    return;
+  }
+  console.log('Connected to MySQL database');
+});
+
+// Định nghĩa endpoint để lấy tất cả sản phẩm
+app.get('/products', (req, res) => {
+  const sql = 'SELECT * FROM products'; // Thay đổi thành tên bảng sản phẩm của bạn
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching products:', err);
+      res.status(500).send('Error fetching products');
+      return;
+    }
+    res.json(results);
+  });
+});
+
+// Lắng nghe các yêu cầu trên cổng đã chọn
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+Bước 5: Chạy Backend
+Mở terminal và di chuyển đến thư mục của dự án.
+Chạy lệnh sau để khởi động backend:
+bash
+Sao chép mã
+node server.js
+Backend của bạn sẽ bắt đầu lắng nghe trên cổng bạn đã chọn (ở đây là cổng 3001). Bây giờ, nó có thể được sử dụng để truy vấn dữ liệu từ cơ sở dữ liệu MySQL của bạn và cung cấp cho ứng dụng ReactJS của bạn thông qua API. Đảm bảo rằng MySQL đang chạy và bạn đã cấu hình đúng thông tin đăng nhập cho kết nối cơ sở dữ liệu MySQL trong mã của bạn.

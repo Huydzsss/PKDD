@@ -1,0 +1,11 @@
+{/* <form className="row g-3">
+                                            <div className="col-12 col-lg-6"> <label htmlFor="firstName" className="form-label">First Name</label> <input type="text" className="form-control" id="firstName" /></div>
+                                            <div className="col-12 col-lg-6"> <label htmlFor="lastName" className="form-label">Last Name</label> <input type="text" className="form-control" id="lastName" /></div>
+                                            <div className="col-12"> <label htmlFor="userName" className="form-label">User Name</label> <input type="text" className="form-control" id="userName" /></div>
+                                            <div className="col-12"> <label htmlFor="email" className="form-label">Email Address</label> <input type="email" className="form-control" id="email" /></div>
+                                            <div className="col-12"> <label htmlFor="phone" className="form-label">Phone</label> <input type="text" className="form-control" id="phone" /></div>
+                                            <div className="col-12"> <label htmlFor="currentPassword" className="form-label">Current Password</label> <input type="password" className="form-control" id="currentPassword" /></div>
+                                            <div className="col-12 col-lg-6"> <label htmlFor="newPassword" className="form-label">New Password</label> <input type="password" className="form-control" id="newPassword" /></div>
+                                            <div className="col-12 col-lg-6"> <label htmlFor="confirmPassword" className="form-label">Confirm Password</label> <input type="password" className="form-control" id="confirmPassword" /></div>
+                                            <div className="col-12"> <button type="submit" className="btn btn-dark btn-ecomm">Save changes</button></div>
+                                        </form> */}

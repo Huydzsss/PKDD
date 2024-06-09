@@ -1,0 +1,223 @@
+import React, { useState, useEffect } from "react";
+import { NavLink, useParams } from "react-router-dom";
+import axios from "axios";
+import '../style.css';
+import '../Home/Modal.css';
+
+export default function Sort() {
+    const [zoomImage, setZoomImage] = useState(null);
+    const { Category } = useParams();
+    const [sortOption, setSortOption] = useState('default');
+    const [productsToShow, setProductsToShow] = useState(12);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [products, setProducts] = useState([]);
+    const [filters, setFilters] = useState({
+        name: '',
+        minPrice: '',
+        maxPrice: '',
+    });
+
+    const [categories, setCategories] = useState({
+        "Computer & Laptop": 25,
+        "Smart Watch": 30,
+        "Airpods": 45,
+        "Televisions": 35,
+        "Console Games": 45,
+        "Cameras": 55,
+    });
+
+    const [brands, setBrands] = useState({
+        "Apple": 13,
+        "Gionee": 24,
+        "HTC": 19,
+        "LG": 32,
+        "Micromax": 20,
+        "Samsung": 52,
+    });
+
+    const [colors, setColors] = useState({
+        "Black": 25,
+        "Blue": 31,
+        "Brown": 10,
+        "Green": 42,
+        "Gray": 21,
+        "Orange": 12,
+        "Yellow": 6,
+    });
+
+    const [selectedFilters, setSelectedFilters] = useState({
+        categories: [],
+        brands: [],
+        colors: [],
+    });
+
+    useEffect(() => {
+        axios.get(`http://localhost:3010/products?category=${Category}`)
+            .then(response => setProducts(response.data))
+            .catch(error => console.error('Error fetching products:', error));
+    }, [Category]);
+
+    const handleZoom = (imageSrc) => setZoomImage(imageSrc);
+    const closeModal = () => setZoomImage(null);
+
+    const handleSortChange = (e) => setSortOption(e.target.value);
+    const handleProductsToShowChange = (e) => setProductsToShow(parseInt(e.target.value, 10));
+
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters({ ...filters, [name]: value });
+    };
+
+    const handleCategoryFilterChange = (category) => {
+        setSelectedFilters(prevFilters => {
+            const newFilters = { ...prevFilters };
+            if (newFilters.categories.includes(category)) {
+                newFilters.categories = newFilters.categories.filter(item => item !== category);
+            } else {
+                newFilters.categories.push(category);
+            }
+            return newFilters;
+        });
+    };
+
+    const handleBrandFilterChange = (brand) => {
+        setSelectedFilters(prevFilters => {
+            const newFilters = { ...prevFilters };
+            if (newFilters.brands.includes(brand)) {
+                newFilters.brands = newFilters.brands.filter(item => item !== brand);
+            } else {
+                newFilters.brands.push(brand);
+            }
+            return newFilters;
+        });
+    };
+
+    const handleColorFilterChange = (color) => {
+        setSelectedFilters(prevFilters => {
+            const newFilters = { ...prevFilters };
+            if (newFilters.colors.includes(color)) {
+                newFilters.colors = newFilters.colors.filter(item => item !== color);
+            } else {
+                newFilters.colors.push(color);
+            }
+            return newFilters;
+        });
+    };
+
+    const filterProducts = (products, filters) => {
+        return products.filter(product => {
+            const matchesName = product.name.toLowerCase().includes(filters.name.toLowerCase());
+            const matchesMinPrice = filters.minPrice === '' || product.price >= parseFloat(filters.minPrice);
+            const matchesMaxPrice = filters.maxPrice === '' || product.price <= parseFloat(filters.maxPrice);
+            const matchesCategory = selectedFilters.categories.length === 0 || selectedFilters.categories.includes(product.category);
+            const matchesBrand = selectedFilters.brands.length === 0 || selectedFilters.brands.includes(product.brand);
+            const matchesColor = selectedFilters.colors.length === 0 || selectedFilters.colors.includes(product.color);
+            return matchesName && matchesMinPrice && matchesMaxPrice && matchesCategory && matchesBrand && matchesColor;
+        });
+    };
+
+    const sortProducts = (products, sortOption) => {
+        switch (sortOption) {
+            case 'most-popular':
+                return products;
+            case 'average-rating':
+                return products.sort((a, b) => b.rating - a.rating);
+            case 'latest':
+                return products;
+            case 'price-low-high':
+                return products.sort((a, b) => a.price - b.price);
+            case 'price-high-low':
+                return products.sort((a, b) => b.price - a.price);
+            default:
+                return products;
+        }
+    };
+
+    const filteredProducts = filterProducts(products, filters);
+    const sortedProducts = sortProducts([...filteredProducts], sortOption);
+    const totalPages = Math.ceil(sortedProducts.length / productsToShow);
+    const displayedProducts = sortedProducts.slice((currentPage - 1) * productsToShow, currentPage * productsToShow);
+
+    return (
+        <div className="d-flex">
+        <div className="filters-container">
+            <div className="d-flex justify-content-between align-items-center border-bottom border-silver mt-4 filter">
+                <span className="fw-bold">Filter:</span>
+                <a className="small text-dark" href="#" onClick={() => setSelectedFilters({ categories: [], brands: [], colors: [] })}>Clear All</a>
+            </div>
+            <div className="mt-4">
+                <div className="mb-3 border-bottom">
+                    <h6 className="mb-3 fw-bold">Categories</h6>
+                    <ul>
+                        {Object.entries(categories).map(([category, count], index) => (
+                            <li key={index}>
+                                <div className="form-check mb-3 small">
+                                    <input
+                                        className="form-check-input rounded-0 border-silver"
+                                        id={`category-${index}`}
+                                        type="checkbox"
+                                        value={category}
+                                        checked={selectedFilters.categories.includes(category)}
+                                        onChange={() => handleCategoryFilterChange(category)}
+                                    />
+                                    <label className="form-check-label text-dark" htmlFor={`category-${index}`}>
+                                        {category}<span className="text-gray ms-1">({count})</span>
+                                    </label>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                <div className="mb-3 border-bottom">
+                    <h6 className="mb-3 fw-bold">Brands</h6>
+                    <ul>
+                        {Object.entries(brands).map(([brand, count], index) => (
+                            <li key={index}>
+                                <div className="form-check mb-3 small">
+                                    <input
+                                        className="form-check-input rounded-0 border-silver"
+                                        id={`brand-${index}`}
+                                        type="checkbox"
+                                        value={brand}
+                                        checked={selectedFilters.brands.includes(brand)}
+                                        onChange={() => handleBrandFilterChange(brand)}
+                                    />
+                                    <label className="form-check-label text-dark" htmlFor={`brand-${index}`}>
+                                        {brand}<span className="text-gray ms-1">({count})</span>
+                                    </label>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                <div className="mb-3 border-bottom">
+                    <h6 className="mb-3 fw-bold">Colors</h6>
+                    <ul>
+                        {Object.entries(colors).map(([color, count], index) => (
+                            <li key={index}>
+                                <div className="form-check mb-3 small">
+                                    <input
+                                        className="form-check-input rounded-0 border-silver"
+                                        id={`color-${index}`}
+                                        type="checkbox"
+                                        value={color}
+                                        checked={selectedFilters.colors.includes(color)}
+                                        onChange={() => handleColorFilterChange(color)}
+                                    />
+                                    <label className="form-check-label text-dark" htmlFor={`color-${index}`}>
+                                        {color}<span className="text-gray ms-1">({count})</span>
+                                    </label>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div className="products-container">
+            {/* Product sorting and display code */}
+        </div>
+    </div>
+);
+}
+
