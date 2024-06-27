@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Login_Register.css';
 import { ToastContainer, toast } from 'react-toastify';
@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Menu from '../Home/Menu';
 import Footer from '../Home/Footer';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 export default function Login_Register() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -16,12 +16,15 @@ export default function Login_Register() {
     password: '',
     confirm_password: ''
   });
+  const [loggedInCustomerId, setLoggedInCustomerId] = useState(null);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const toggleSignUp = () => {
     setIsSignUp(!isSignUp);
     setErrors({});
   };
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,7 +59,6 @@ export default function Login_Register() {
 
   const validateLogin = () => {
     let tempErrors = {};
-    if (!formData.username.trim()) tempErrors.username = 'Username is required.';
     if (!formData.email.trim()) {
       tempErrors.email = 'Email is required.';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -73,7 +75,7 @@ export default function Login_Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateRes()) {
-      axios.post('http://localhost:3010/products/customers', {
+      axios.post('http://localhost:3010/pkdd/customers', {
         action: 'register',
         ...formData
       })
@@ -96,17 +98,27 @@ export default function Login_Register() {
   const handleSubmitLogin = (e) => {
     e.preventDefault();
     if (validateLogin()) {
-      console.log('formData:', formData);
-      axios.post('http://localhost:3010/products/customers', {
+      axios.post('http://localhost:3010/pkdd/customers', {
         action: 'login',
-        ...formData
+        email: formData.email,
+        password: formData.password
       })
         .then(response => {
+          console.log('Server response:', response.data); // Log the response data
           if (response.status >= 200 && response.status < 300) {
-            toast.success("Login successful", { autoClose: 2000 });
-            localStorage.setItem('username', formData.username);
-            localStorage.setItem('isLoggedIn', 'true');
-            window.location.href = '/My_account';
+            const token = response.data.token;
+            const user = response.data.user;
+            if (user) {
+              localStorage.setItem('token', token);
+              localStorage.setItem('username', user.username);
+              localStorage.setItem('customers_id', user.customers_id); // Ensure user ID is stored
+              localStorage.setItem('isLoggedIn', 'true');
+              setLoggedInCustomerId(user.customers_id); // Set logged-in customer ID
+              navigate('/My_account');
+              toast.success("Login successful", { autoClose: 2000 });
+            } else {
+              toast.error("Login failed: User data not found", { autoClose: 2000 });
+            }
           } else {
             toast.error("Login failed", { autoClose: 2000 });
           }
@@ -144,11 +156,6 @@ export default function Login_Register() {
       <div className={`cont ${isSignUp ? 's--signup' : ''}`}>
         <div className="form sign-in">
           <h2>Welcome</h2>
-          <label>
-            <span>Username</span>
-            <input type="text" name="username" value={formData.username} onChange={handleChange} />
-            {errors.username && <p className="error">{errors.username}</p>}
-          </label>
           <label>
             <span>Email</span>
             <input type="text" name="email" value={formData.email} onChange={handleChange} />
@@ -194,7 +201,8 @@ export default function Login_Register() {
             <label>
               <span>Confirm Password</span>
               <input type="password" name="confirm_password" value={formData.confirm_password} onChange={handleChange} />
-              {errors.confirm_password && <p className="error">{errors.confirm_password}</p>}
+              {errors.confirm_password && <p
+                className="error">{errors.confirm_password}</p>}
             </label>
             <button type="button" className="submit" onClick={handleSubmit}>Sign Up</button>
           </div>

@@ -34,7 +34,11 @@ export default function Contact() {
     } else if (!/\S+@\S+\.\S+/.test(formData.Email)) {
       tempErrors.Email = 'Email is not valid.';
     }
-    if (!formData.Phone) tempErrors.Phone = 'Phone is required.';
+    if (!formData.Phone){
+      tempErrors.Phone = 'Phone is required.';
+    }else if(! /^\d{10}$/.test(formData.Phone)){
+      tempErrors.Phone = "Phone number is valid."
+    }
     if (!formData.Subject) tempErrors.Subject = 'Subject is required.';
     if (!formData.Message) tempErrors.Message = 'Message is required.';
     setErrors(tempErrors);
@@ -50,7 +54,7 @@ export default function Contact() {
         created_date: currentDate,
         updated_date: currentDate
       };
-      axios.post('http://localhost:3010/products/contactus', dataToSend)
+      axios.post('http://localhost:3010/pkdd/contactus', dataToSend)
         .then(response => {
           toast.success("Sent success");
           setFormData({

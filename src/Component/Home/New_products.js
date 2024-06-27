@@ -1,26 +1,74 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from 'axios';
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import '../style.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { CompareContext } from './CompareContext';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function New_products() {
-    const { addProductToCompare } = useContext(CompareContext);
+export default function NewProducts() {
     const [newProducts, setNewProducts] = useState([]);
+    const { compareProducts, addProductToCompare } = useContext(CompareContext);
+    const [pkdd, setPkdd] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [zoomImage, setZoomImage] = useState(null);
+    const [userCustomerId, setUserCustomerId] = useState(1);
+    const [cartItems, setCartItems] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('http://localhost:3010/products/new_products')
+        axios.get('http://localhost:3010/pkdd/products')
             .then(response => {
-                setNewProducts(response.data);
+                const sortedProducts = response.data
+                    .filter(product => product.category !== "SmartPhone")
+                    .sort((a, b) => b.rating - a.rating);
+                setPkdd(sortedProducts);
+                setFilteredProducts(sortedProducts);
             })
             .catch(error => {
-                console.error('Error fetching products:', error);
+                console.error('Error fetching pkdd:', error);
             });
     }, []);
+
+    const addToCart = (product) => {
+        const existingItemIndex = cartItems.findIndex(item => item.product.id === product.id);
+
+        if (existingItemIndex !== -1) {
+            const updatedCartItems = [...cartItems];
+            updatedCartItems[existingItemIndex].quantity += 1;
+
+            axios.put(`http://localhost:3010/pkdd/shopping_cart/${product.id}`, {
+                quantity: updatedCartItems[existingItemIndex].quantity
+            })
+                .then(response => {
+                    setCartItems(updatedCartItems);
+                    toast.success('Product added to cart!');
+                    console.log('Product added to cart:', response.data);
+                })
+                .catch(error => {
+                    toast.error("Error adding product to cart");
+                    console.error('Error adding product to cart:', error);
+                });
+        } else {
+            axios.post('http://localhost:3010/pkdd/shopping_cart', {
+                customers_id: userCustomerId,
+                product_id: product.id,
+                quantity: 1
+            })
+                .then(response => {
+                    setCartItems([...cartItems, { product, quantity: 1 }]);
+                    toast.success('Product added to cart!');
+                    console.log('Product added to cart:', response.data);
+                })
+                .catch(error => {
+                    toast.error("Error adding product to cart");
+                    console.error('Error adding product to cart:', error);
+                });
+        }
+    };
 
     const handleZoom = (imageSrc) => {
         setZoomImage(imageSrc);
@@ -66,14 +114,15 @@ export default function New_products() {
 
     return (
         <div>
+            <ToastContainer />
             <div className="py-5 bg-light">
                 <div className="container">
                     <h4 className="text-start border-bottom pb-2 mb-4">
                         <span className="px-2 position-relative">New Products</span>
                     </h4>
                     <Slider {...settings}>
-                        {newProducts.map(product => (
-                            <div className="item-slider " key={product.id}>
+                        {filteredProducts.slice(0, 4).map(product => (
+                            <div className="item-slider" key={product.id}>
                                 <div className="card product-card bg-transparent border-0 px-3">
                                     <div className="card-header position-relative shadow-sm border-0 p-0">
                                         <NavLink className="thumb-right" to={`/Product_detail/${product.id}`} onClick={() => window.scrollTo(0, 0)}>
@@ -95,7 +144,7 @@ export default function New_products() {
                                                 </a>
                                             </li>
                                         </ul>
-                                        <button className="w-75 position-absolute bottom-center-10 rounded-0 btn btn-sm btn-primary">
+                                        <button onClick={() => addToCart(product)} className="w-75 position-absolute bottom-center-10 rounded-0 btn btn-sm btn-primary">
                                             <i className="bi bi-basket me-2" />Add To Cart
                                         </button>
                                     </div>

@@ -10,8 +10,6 @@ import Sale_today from './Sale_today';
 import New_products from './New_products';
 import Shopping_cart from './Shopping_cart';
 import { NavLink } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-
 
 export default function Home() {
 
@@ -30,9 +28,9 @@ export default function Home() {
                                 <div className="text-center- text-white- p-5 d-flex flex-column justify-content-center position-absolute top-0 left-0 w-50 h-100 bg-blue-100-">
                                     <h5 className="fw-bold mb-2 text-uppercase" data-animation="fadeInUp" data-delay="1s">
                                         only <span className="text-primary">50% OFF</span></h5>
-                                    <h1 className="w-50- fw-bold mb-2" data-animation="fadeInLeft" data-delay="1s">Original Samsung Galaxy Watch
+                                    <h1 className="w-50- fw-bold mb-2" data-animation="fadeInLeft" data-delay="1s">Latest smartphones
                                     </h1>
-                                    <p className="text-dark- fw-bold-" data-animation="fadeInUp" data-delay="1s">Professional Monitor Headphones
+                                    <p className="text-dark- fw-bold-" data-animation="fadeInUp" data-delay="1s">Latest Phones on the Market
                                     </p>
                                     <div data-animation="fadeInDown" data-delay="1s"><NavLink className="btn btn-primary py-2 px-4 rounded-0 mt-3">Shop
                                         Now</NavLink></div>
@@ -42,9 +40,8 @@ export default function Home() {
                         <div className="slide">
                             <div className="position-relative text-white center-image rounded-3" style={{ minHeight: 430, backgroundImage: 'url(assets/images/slider-2.png)' }}>
                                 <div className="p-5 d-flex flex-column justify-content-center position-absolute top-0 left-0 w-50 h-100 bg-blue-100-">
-                                    <h5 className="fw-bold mb-2 text-uppercase text-primary" data-animation="fadeInLeftBig" data-delay="1s">Women
-                                        Fashion</h5>
-                                    <h1 className="w-50- fw-bold mb-2" data-animation="zoomIn" data-delay="1s">Top New summer Collection</h1>
+                                    <h5 className="fw-bold mb-2 text-uppercase text-primary" data-animation="fadeInLeftBig" data-delay="1s">Summer</h5>
+                                    <h1 className="w-50- fw-bold mb-2 " data-animation="zoomIn" data-delay="1s">Top New summer Collection</h1>
                                     <p className="text-light fw-bold" data-animation="zoomInRight" data-delay="1s">Get it form 50% off</p>
                                     <div data-animation="fadeInUp" data-delay="1s"><NavLink className="btn btn-primary py-2 px-4 rounded-0 mt-3">Shop
                                         Now</NavLink></div>
@@ -67,7 +64,7 @@ export default function Home() {
             <New_products />
             <Footer />
             <Shopping_cart />
-            <ToastContainer />
+            
         </div>
     )
 }

@@ -1,9 +1,28 @@
-import React,{useState,useEffect} from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink,useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../style.css';
 
-export default function Menu({ isLoggedIn, handleLogout }) {
- 
+export default function Menu() {
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [modal, setModal] = useState([])
+  const [category, setCategory] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    // Kiểm tra trạng thái đăng nhập từ localStorage hoặc API
+    const loggedInStatus = localStorage.getItem('isLoggedIn');
+    setIsLoggedIn(loggedInStatus === 'true');
+  }, []);
+  useEffect(() => {
+    axios.get('http://localhost:3010/pkdd/products')
+      .then(response => {
+        setModal(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching products:', error);
+      });
+  }, []);
+
 
   return (
     <div className="bg-dark py-lg-1 py-3">
@@ -17,76 +36,82 @@ export default function Menu({ isLoggedIn, handleLogout }) {
           <div className="col-lg-7 d-none d-lg-block">
             <ul className="nav main-nav gap-3 text-lights-lead justify-content-center py-2">
               <li className="nav-item small">
-                <NavLink to="/" className="nav-link fw-bold py-3 px-1 hover:text-lights">Home</NavLink>
+                <NavLink to="/" className="nav-link fw-bold py-3 px-1 hover:text-lights fs-6">Home</NavLink>
               </li>
               <li className="nav-item small">
-                <NavLink to="/Shop" className="nav-link fw-bold py-3 px-1 hover:text-lights">Shop</NavLink>
+                <NavLink to="/Shop" className="nav-link fw-bold py-3 px-1 hover:text-lights fs-6">Shop</NavLink>
               </li>
-              <li className="nav-item dropdown- small"><a className="nav-link dropdown-toggle fw-bold py-3 px-1 hover:text-primary" to="#">Products </a>
+              <li className="nav-item dropdown- small"><a className="nav-link dropdown-toggle fw-bold py-3 px-1 hover:text-primary fs-6" to="#">Categories </a>
                 <div className="dropdown-menu mega-menu">
                   <ul className="row">
-                    <li className="child-mega col-lg-3">
-                      <p className="mega-title text-uppercase mb-0">Shop List</p>
-                      <ul className="flex flex-column gap-2">
-                        <li><NavLink className="mega-link" to="shop-sidebar.html">Shop Sidebar</NavLink></li>
-                        <li><NavLink className="mega-link" to="shop-full-width-col-3.html">Shop Fullwidth Column 3</NavLink></li>
-                        <li><NavLink className="mega-link" to="shop-full-width-col-4.html">Shop Fullwidth Column 4</NavLink></li>
-                        <li><NavLink className="mega-link" to="shop-list-view.html">Shop List View</NavLink></li>
+                      <li className="child-mega col-lg-3" >
+                        <p className="mega-title text-uppercase mb-0">By Accessory Type</p>
+                        <ul className="flex flex-column gap-2">
+                        <li><NavLink className="mega-link" to="/SortBattery" >Battery</NavLink></li>
+                        <li><NavLink className="mega-link" to="/Cables" >Cables & Chargers</NavLink></li>
+                        <li><NavLink className="mega-link" to="/SortHeadphones" >Headphones</NavLink></li>
+                        <li><NavLink className="mega-link" to="/SortScreen" >Screen Protectors</NavLink></li>
+                        <li><NavLink className="mega-link" to="/SortPhoneCase" >Phone Case</NavLink></li>
                       </ul>
-                    </li>
+                      </li>
                     <li className="child-mega col-lg-3">
-                      <p className="mega-title text-uppercase mb-0">Product Layouts</p>
-                      <ul className="flex flex-column gap-2">
-                        <li><NavLink className="mega-link" to="single-product.html">Product Simple</NavLink></li>
-                        <li><NavLink className="mega-link" to="single-product-variable.html">Variations Swatches</NavLink></li>
-                        <li><NavLink className="mega-link" to="single-product-vertical.html">Vertical Gallary</NavLink></li>
-                        <li><NavLink className="mega-link" to="#">With Video</NavLink></li>
-                        <li><NavLink className="mega-link" to="#">With Countdown Timer</NavLink></li>
-                        <li><NavLink className="mega-link" to="#">Product Presentation</NavLink></li>
-                        <li><NavLink className="mega-link" to="shop-list-view.html">List View</NavLink></li>
-                        <li><NavLink className="mega-link" to="#">Details Gallery</NavLink></li>
-                      </ul>
+                      <p className="mega-title text-uppercase mb-0">By Brand</p>
+                      <div className="d-flex flex-wrap">
+                        <div className="col-6 pt-3 pe-2">
+                          <NavLink to="/Samsung">
+                            <img className="border border-silver-light w-100" src="assets\images\NSX\drop-brand-01.png" alt="Model 01" />
+                          </NavLink>
+                        </div>
+                        <div className="col-6 pt-3 pe-2">
+                          <NavLink to="/Xiaomi">
+                            <img className="border border-silver-light w-100" src="assets\images\NSX\drop-brand-02.png" alt="Model 02" />
+                          </NavLink>
+                        </div>
+                        <div className="col-6 pt-3 pe-2">
+                          <NavLink to="/Apple">
+                            <img className="border border-silver-light w-100" src="assets\images\NSX\drop-brand-03.png" alt="Model 03" />
+                          </NavLink>
+                        </div>
+                        <div className="col-6 pt-3 pe-2">
+                          <NavLink to="/Huawei">
+                            <img className="border border-silver-light w-100" src="assets\images\NSX\drop-brand-04.png" alt="Model 04" />
+                          </NavLink>
+                        </div>
+                        <div className="col-6 pt-3 pe-2">
+                          <NavLink to="/Oppo">
+                            <img className="border border-silver-light w-100" src="assets\images\NSX\drop-brand-05.png" alt="Model 05" />
+                          </NavLink>
+                        </div>
+                        <div className="col-6 pt-3 pe-2">
+                          <NavLink to="/Nokia">
+                            <img className="border border-silver-light w-100" src="assets\images\NSX\drop-brand-06.png" alt="Model 06" />
+                          </NavLink>
+                        </div>
+                      </div>
                     </li>
                     <li className="child-mega col-lg-3">
                       <p className="mega-title text-uppercase mb-0">eCommerce</p>
                       <ul className="flex flex-column gap-2">
-                        <li><NavLink className="mega-link" to="cart.html">Shopping Cart</NavLink></li>
-                        <li><NavLink className="mega-link" to="#">Track Your Order</NavLink></li>
-                        <li><NavLink className="mega-link" to="compare.html">Compare</NavLink></li>
-                        <li><NavLink className="mega-link" to="wishlist.html">Wishlist</NavLink></li>
-                        <li><NavLink className="mega-link" to="checkout.html">Checkout</NavLink></li>
-                        <li><NavLink className="mega-link" to="my-account.html">My account</NavLink></li>
+                        <li><NavLink className="mega-link" to="/Cart">Shopping Cart</NavLink></li>
+                        <li><NavLink className="mega-link" to="/Compare">Compare</NavLink></li>
+                        <li><NavLink className="mega-link" to="/My_account">My account</NavLink></li>
                       </ul>
                     </li>
-                    <li className="col-lg-3">
-                      <div className="d-flex flex-wrap">
-                        <div className="col-lg-6 pt-3 pe-2"><a className="shadow-sm" to="#"><img className="border border-silver-light w-100" src="https://z.nooncdn.com/cms/pages/20210410/2a23ead9569718f23f16e78305f07230/drop-brand-01.png" alt /></a></div>
-                        <div className="col-lg-6 pt-3 pe-2"><a to="#"><img className="border border-silver-light w-100" src="https://z.nooncdn.com/cms/pages/20210410/2a23ead9569718f23f16e78305f07230/drop-brand-02.png" alt /></a></div>
-                        <div className="col-lg-6 pt-3 pe-2"><a to="#"><img className="border border-silver-light w-100" src="https://z.nooncdn.com/cms/pages/20210410/2a23ead9569718f23f16e78305f07230/drop-brand-03.png" alt /></a></div>
-                        <div className="col-lg-6 pt-3 pe-2"><a to="#"><img className="border border-silver-light w-100" src="https://z.nooncdn.com/cms/pages/20210410/2a23ead9569718f23f16e78305f07230/drop-brand-04.png" alt /></a></div>
-                        <div className="col-lg-6 pt-3 pe-2"><a to="#"><img className="border border-silver-light w-100" src="https://z.nooncdn.com/cms/pages/20210410/2a23ead9569718f23f16e78305f07230/drop-brand-05.png" alt /></a></div>
-                        <div className="col-lg-6 pt-3 pe-2"><a to="#"><img className="border border-silver-light w-100" src="https://z.nooncdn.com/cms/pages/20210410/2a23ead9569718f23f16e78305f07230/drop-brand-06.png" alt /></a></div>
-                      </div>
+                    <li className="child-mega col-lg-3">
+                      <p className="mega-title text-uppercase mb-0">By Phone type</p>
+                      <ul className="flex flex-column gap-2">
+                        <li><NavLink className="mega-link" to="/SortSmartPhone">SmartPhone</NavLink></li>
+                        <li><NavLink className="mega-link" to="/SortHPhone">High-end phone</NavLink></li>
+                        
+                      </ul>
                     </li>
-                    
+
                   </ul>
                 </div>
               </li>
-
-
-              <li className="nav-item dropdown small">
-                <NavLink to="/" className="nav-link dropdown-toggle fw-bold py-3 px-1 hover:text-lights" data-bs-toggle="dropdown">Categories</NavLink>
-                <ul className="dropdown-menu">
-                  <li><NavLink className="dropdown-item" to="#">Link 1</NavLink></li>
-                  <li><NavLink className="dropdown-item" to="#">Link 2</NavLink></li>
-                  <li><NavLink className="dropdown-item" to="#">Link 3</NavLink></li>
-                </ul>
-              </li>
+              
               <li className="nav-item small">
-                <NavLink to="/" className="nav-link fw-bold py-3 px-1 hover:text-lights">News</NavLink>
-              </li>
-              <li className="nav-item small">
-                <NavLink to="/Contact" className="nav-link fw-bold py-3 px-1 hover:text-lights">Contact Us</NavLink>
+                <NavLink to="/Contact" className="nav-link fw-bold py-3 px-1 hover:text-lights fs-6">Contact Us</NavLink>
               </li>
             </ul>
           </div>
@@ -95,14 +120,15 @@ export default function Menu({ isLoggedIn, handleLogout }) {
               <NavLink to="/Compare" className="d-none d-lg-flex text-white flex-column align-items-center position-relative">
                 <i className="bi bi-arrow-left-right h5 m-0"></i>
               </NavLink>
-              {isLoggedIn ? (
+              {isLoggedIn && (
                 <>
                   <NavLink to="/My_account" className="text-white d-none d-lg-flex flex-column align-items-center position-relative">
                     <i className="bi bi-person-circle h5 m-0"></i>
                   </NavLink>
-                  <button onClick={handleLogout} className="btn btn-danger">Logout</button>
                 </>
-              ) : (
+              )}
+              {/* Nếu chưa đăng nhập, hiển thị nút Login/Register */}
+              {!isLoggedIn && (
                 <NavLink to="/Login_Register" className="text-white d-none d-lg-flex flex-column align-items-center position-relative">
                   <i className="bi bi-person-circle h5 m-0"></i>
                 </NavLink>
@@ -165,7 +191,7 @@ export default function Menu({ isLoggedIn, handleLogout }) {
                     <i className="arrow small fa-solid fa-chevron-down" />
                   </NavLink>
                   <ul className="hidden">
-                    <li><NavLink className="dropdown-item" to="cart.html">Shopping Cart</NavLink></li>
+                    <li><NavLink className="dropdown-item" to="/Cart">Shopping Cart</NavLink></li>
                     <li><NavLink className="dropdown-item" to="#">Track Your Order</NavLink></li>
                     <li><NavLink className="dropdown-item" to="compare.html">Compare</NavLink></li>
                     <li><NavLink className="dropdown-item" to="wishlist.html">Wishlist</NavLink></li>

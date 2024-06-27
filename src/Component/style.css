@@ -913,7 +913,7 @@ ul li:hover .dropdown-menu {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    transition: all .5s;
+    transition: all .5;
     z-index: 1;
 }
 
@@ -1795,10 +1795,14 @@ ul li:hover .dropdown-menu {
     position: relative;
     cursor: zoom-in;
     overflow: hidden;
+    
 }
 
 .slider-zoom img {
     transition: transform 0.3s ease-in-out;
+    max-width: 100%; 
+    object-fit: contain; 
+    height: auto;
 }
 
 .slider-zoom:hover img {
@@ -2030,4 +2034,7 @@ footer .bottom-footer-dark ul li {
 .user-rate input[type="radio"] {
     transform: scale(1.5);
    
+}
+.img-brand {
+    border-radius: 20%;
 }

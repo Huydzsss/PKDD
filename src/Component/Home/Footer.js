@@ -47,11 +47,11 @@ export default function Footer() {
                   <div className="footer-widget">
                     <h5 className="mb-4">Popular</h5>
                     <ul className="footer-list text-dark">
-                      <li><NavLink to="single-product.html">Blue Training Shoes</NavLink></li>
-                      <li><NavLink to="single-product.html">Popo Smart Phone P56</NavLink></li>
-                      <li><NavLink to="single-product.html">Smart Watch A355S</NavLink></li>
-                      <li><NavLink to="single-product.html">White Schoolbag</NavLink></li>
-                      <li><NavLink to="single-product.html">Blue Training Shoes</NavLink></li>
+                      <li><NavLink to="/Shop">Iphone 15</NavLink></li>
+                      <li><NavLink to="/Shop">Poco</NavLink></li>
+                      <li><NavLink to="/Shop">Airpod</NavLink></li>
+                      <li><NavLink to="/Shop">Red Magic 8 Pro Bumblebee</NavLink></li>
+                      <li><NavLink to="/Shop">Samsung s21</NavLink></li>
                     </ul>
                   </div>
                 </div>

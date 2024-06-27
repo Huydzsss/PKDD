@@ -6,23 +6,23 @@ import '../style.css';
 
 export default function ProductsByCategory() {
     const { category } = useParams();
-    const [products, setProducts] = useState([]);
+    const [pkdd, setPkdd] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:3010/products')
+        axios.get('http://localhost:3010/pkdd/products')
             .then(response => {
-                setProducts(response.data);
+                setPkdd(response.data);
             })
             .catch(error => {
-                console.error('Error fetching products:', error);
+                console.error('Error fetching pkdd:', error);
             });
     }, []);
 
     useEffect(() => {
-        const filtered = products.filter(product => product.category === category);
+        const filtered = pkdd.filter(product => product.category === category);
         setFilteredProducts(filtered);
-    }, [products, category]);
+    }, [pkdd, category]);
 
     return (
         <div className="container">

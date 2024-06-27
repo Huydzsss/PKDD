@@ -1,10 +1,8 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const CompareContext = createContext();
-
-
 
 export const CompareProvider = ({ children }) => {
   const [compareProducts, setCompareProducts] = useState([]);
@@ -16,7 +14,9 @@ export const CompareProvider = ({ children }) => {
         return prevCompareProducts;
       } else {
         setCompareCount((prevCount) => prevCount + 1);
-        toast.success(`${product.name} has been added to comparison.`);
+        toast.success(`${product.name} has been added to comparison.`, {
+          onClose: () => toast.dismiss(), // Đóng toast khi nhấn nút "x"
+        });
         return [...prevCompareProducts, product];
       }
     });
@@ -43,8 +43,7 @@ export const CompareProvider = ({ children }) => {
       }}
     >
       {children}
+      
     </CompareContext.Provider>
   );
 };
-
-export default CompareContext;

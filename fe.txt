@@ -1,0 +1,18 @@
+font-end:
+
+// Example frontend code to initiate PayPal transaction
+const handlePayNowClick = async () => {
+  try {
+    const response = await axios.post('http://localhost:3010/startPayPalTransaction', {
+      total_amount: 100, // Replace with actual amount
+      currency: 'USD'    // Replace with actual currency
+    });
+
+    // Redirect user to PayPal approval URL
+    window.location.href = response.data.approvalUrl;
+
+  } catch (error) {
+    console.error('Payment error:', error);
+    // Handle error
+  }
+};
